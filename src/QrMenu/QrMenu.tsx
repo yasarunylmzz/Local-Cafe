@@ -1,145 +1,18 @@
 import { useState, FC } from "react";
-
-interface MenuItem {
-  id: number;
-  name: {
-    English: string;
-    Turkish: string;
-  };
-  description: {
-    English: string;
-    Turkish: string;
-  };
-  price: {
-    English: string;
-    Turkish: string;
-  };
-  image: string;
-}
-
-interface MenuData {
-  [category: string]: MenuItem[];
-}
-
-interface CategoryTranslations {
-  English: string[];
-  Turkish: string[];
-}
+import { menuItems, categories } from "../../public/data";
 
 type LanguageType = "English" | "Turkish";
 
 const QrMenu: FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>("Iced Drinks");
-  const [language, setLanguage] = useState<LanguageType>("English");
-
-  const CoffeeIcon: FC = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-5 h-5 text-[#5c4033]"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-      <line x1="6" y1="1" x2="6" y2="4"></line>
-      <line x1="10" y1="1" x2="10" y2="4"></line>
-      <line x1="14" y1="1" x2="14" y2="4"></line>
-    </svg>
+  const [activeCategory, setActiveCategory] = useState<string>(
+    categories.English[0]
   );
-
-  const IcedCoffeeIcon: FC = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-5 h-5 text-[#5c4033]"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 2l1.5 5.5L6 2"></path>
-      <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-    </svg>
-  );
-
-  const menuItems: MenuData = {
-    "Iced Drinks": [
-      {
-        id: 1,
-        name: {
-          English: "Iced Latin Latte - Large",
-          Turkish: "Buzlu Latin Latte - Büyük",
-        },
-        description: {
-          English: "Espresso with sweetened milk",
-          Turkish: "Espresso ve tatlı süt karışımı",
-        },
-        price: { English: "₺22", Turkish: "₺42" },
-        image:
-          "https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?q=80&w=250&auto=format&fit=crop",
-      },
-      {
-        id: 2,
-        name: {
-          English: "Iced Americano - Large",
-          Turkish: "Buzlu Americano - Büyük",
-        },
-        description: {
-          English: "Espresso diluted with water",
-          Turkish: "Espresso ve su",
-        },
-        price: { English: "₺16", Turkish: "₺36" },
-        image:
-          "https://images.unsplash.com/photo-1585494156145-1c60a0e0e9f3?q=80&w=250&auto=format&fit=crop",
-      },
-      {
-        id: 3,
-        name: { English: "Cold Brew - Large", Turkish: "Cold Brew - Büyük" },
-        description: {
-          English: "Ground coffee steeped in cold/room temperature water",
-          Turkish: "Oda sıcaklığında demlenmiş kahve",
-        },
-        price: { English: "₺20", Turkish: "₺40" },
-        image:
-          "https://images.unsplash.com/photo-1560704429-529dd0e8536c?q=80&w=250&auto=format&fit=crop",
-      },
-      {
-        id: 4,
-        name: { English: "Iced Latte - Large", Turkish: "Buzlu Latte - Büyük" },
-        description: {
-          English: "Espresso with milk",
-          Turkish: "Espresso ve süt",
-        },
-        price: { English: "₺18", Turkish: "₺38" },
-        image:
-          "https://images.unsplash.com/photo-1579888944880-d98341245702?q=80&w=250&auto=format&fit=crop",
-      },
-    ],
-    "Hot Drinks": [],
-    "Pour Over": [],
-    Sandwiches: [],
-  };
-
-  const categories: CategoryTranslations = {
-    English: ["Iced Drinks", "Hot Drinks", "Pour Over", "Sandwiches"],
-    Turkish: [
-      "Soğuk İçecekler",
-      "Sıcak İçecekler",
-      "Filtre Kahveler",
-      "Sandviçler",
-    ],
-  };
+  const [language, setLanguage] = useState<LanguageType>("Turkish");
 
   const getTranslatedCategory = (category: string): string => {
     const index = categories.English.indexOf(category);
     if (index !== -1) {
-      return categories[language][index] || categories.English[index];
+      return categories[language][index] || category;
     }
     return category;
   };
@@ -150,69 +23,32 @@ const QrMenu: FC = () => {
     setActiveCategory(englishCategory);
   };
 
-  const CafeLogo: FC = () => (
-    <div className="flex flex-col items-center justify-center">
-      <div className="mb-2">
-        <svg width="40" height="40" viewBox="0 0 100 100" fill="#5c4033">
-          <path d="M50,10 C30,10 20,30 20,50 C20,70 30,80 50,80 C70,80 80,70 80,50 C80,30 70,10 50,10 Z M50,70 C35,70 30,65 30,50 C30,35 35,20 50,20 C65,20 70,35 70,50 C70,65 65,70 50,70 Z" />
-          <rect x="45" y="80" width="10" height="15" />
-          <rect x="30" y="95" width="40" height="5" />
-        </svg>
-      </div>
-      <div className="text-xl font-semibold text-[#5c4033]">
-        <span className="text-xs align-top">café</span> Locals
-      </div>
-    </div>
-  );
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
-      <div className="lg:w-[480px] bg-white min-h-screen shadow-lg">
-        <div className="bg-[#d2b48c] p-2">
-          <div className="border-4 border-[#5c4033] bg-[#e6d2b5] p-4 rounded-sm">
-            <div className="flex justify-center items-center py-2">
-              <div className="text-[#5c4033] text-center">
-                <div className="flex items-center justify-center">
-                  <span className="text-2xl font-semibold">
-                    <span className="text-xs align-top">café</span> Locals
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#faf6f0]">
+      <div className="max-w-5xl mx-auto bg-white min-h-screen shadow-xl">
+        {/* Header */}
+        <div className="bg-[#5c4033] text-white p-6 rounded-b-3xl shadow-lg">
+          <h1 className="text-3xl font-bold text-center">LOCAL’S CAFÉ</h1>
         </div>
 
-        <div className="flex justify-between items-center p-4">
-          <div>
-            <button className="p-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="flex space-x-2 rounded-full bg-gray-100 p-1">
+        {/* Dil Değiştirme */}
+        <div className="flex justify-center mt-6">
+          <div className="flex space-x-2 rounded-full bg-gray-100 p-1 border">
             <button
-              className={`px-3 py-1 rounded-full ${
-                language === "Turkish" ? "bg-white shadow" : "text-gray-500"
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                language === "Turkish"
+                  ? "bg-[#5c4033] text-white shadow"
+                  : "text-gray-600 hover:bg-gray-200"
               }`}
               onClick={() => setLanguage("Turkish")}
             >
               Türkçe
             </button>
             <button
-              className={`px-3 py-1 rounded-full ${
-                language === "English" ? "bg-white shadow" : "text-gray-500"
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                language === "English"
+                  ? "bg-[#5c4033] text-white shadow"
+                  : "text-gray-600 hover:bg-gray-200"
               }`}
               onClick={() => setLanguage("English")}
             >
@@ -221,84 +57,100 @@ const QrMenu: FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center px-4 py-2 border-b gap-4">
-          {categories[language].map((category, index) => (
-            <button
-              key={index}
-              onClick={() => handleCategoryChange(category)}
-              className={`px-3 py-1 transition-all ${
-                getTranslatedCategory(activeCategory) === category
-                  ? "font-bold border-b-2 border-black"
-                  : "hover:bg-gray-100 rounded"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
+        {/* Kategoriler */}
+        <div className="flex overflow-x-auto py-4 px-6 mt-4 scrollbar-hide">
+          <div className="flex space-x-3 mx-auto">
+            {categories[language].map((category, index) => (
+              <button
+                key={index}
+                onClick={() => handleCategoryChange(category)}
+                className={`px-5 py-2 text-sm font-medium transition-all rounded-full whitespace-nowrap ${
+                  getTranslatedCategory(activeCategory) === category
+                    ? "bg-[#5c4033] text-white shadow-lg"
+                    : "bg-amber-50 text-[#5c4033] border border-amber-200 hover:bg-amber-100"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="py-4 px-2 md:px-4">
-          {menuItems[activeCategory].map((item) => (
-            <div
-              key={item.id}
-              className="flex flex-row mb-6 p-2 hover:bg-gray-50 rounded-lg transition-all"
-            >
-              <div className="mr-4 flex-shrink-0">
-                <img
-                  src={item.image}
-                  alt={item.name[language]}
-                  className="w-20 h-20 object-cover rounded-md shadow-sm"
-                />
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-lg font-bold">{item.name[language]}</h3>
-                <p className="text-gray-600 text-sm">
-                  {item.description[language]}
-                </p>
-                <div className="mt-1 flex items-center">
-                  <span className="text-lg font-semibold">
+        {/* Menü Öğeleri */}
+        <div className="py-6 px-4 space-y-4 mx-auto max-w-2xl">
+          <h2 className="text-xl font-bold text-[#5c4033] mb-4 pl-2 border-l-4 border-[#5c4033]">
+            {getTranslatedCategory(activeCategory)}
+          </h2>
+
+          {menuItems[activeCategory]?.length ? (
+            menuItems[activeCategory].map((item) => (
+              <div
+                key={item.id}
+                className="group flex items-start p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-amber-100 hover:border-amber-300"
+              >
+                <div className="relative flex-shrink-0 mr-4">
+                  <img
+                    src={item.image}
+                    alt={item.name[language]}
+                    className="w-28 h-28 object-cover rounded-lg shadow-md border-2 border-white group-hover:scale-105 transition-transform"
+                  />
+                  <div className="absolute bottom-0 right-0 bg-[#5c4033] text-white px-3 py-1 text-sm font-bold rounded-tl-lg rounded-br-lg">
                     {item.price[language]}
-                  </span>
-                  <div className="ml-2">
-                    {activeCategory === "Iced Drinks" ? (
-                      <IcedCoffeeIcon />
-                    ) : (
-                      <CoffeeIcon />
-                    )}
+                  </div>
+                </div>
+                <div className="flex-grow">
+                  <h3 className="text-lg font-semibold text-[#5c4033] mb-1 group-hover:text-amber-800">
+                    {item.name[language]}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {item.description[language]}
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {item.tags &&
+                      item.tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs px-2 py-1 bg-amber-50 text-amber-800 rounded-full"
+                        >
+                          {tag[language]}
+                        </span>
+                      ))}
                   </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="text-center py-12 text-gray-500 bg-gray-50 rounded-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 mx-auto text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="mt-2 font-medium">
+                {language === "English"
+                  ? "No items available in this category."
+                  : "Bu kategoride ürün bulunmamaktadır."}
+              </p>
             </div>
-          ))}
+          )}
         </div>
 
-        {menuItems[activeCategory].length > 0 && (
-          <div className="flex justify-center py-8 border-t mt-4">
-            <div className="text-center">
-              <CafeLogo />
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="hidden lg:flex flex-1 bg-[#f5f0e8] items-center justify-center p-8">
-        <div className="max-w-2xl">
-          <div className="text-5xl mb-6 text-[#5c4033] font-bold flex items-baseline">
-            <span className="text-lg mr-1">café</span> Locals
-          </div>
-          <p className="text-2xl text-[#8b5a2b] font-light">
-            Kahvenizin tadını çıkarın, kendinizi evinizde hissedin.
+        {/* Footer */}
+        <div className="bg-gray-50 p-4 border-t mt-6 text-center text-sm text-gray-500">
+          <p>
+            {language === "English"
+              ? "Scan QR code to view our menu on your device"
+              : "Menümüzü cihazınızda görüntülemek için QR kodu tarayın"}
           </p>
-          <p className="text-2xl text-[#8b5a2b] mt-2 font-light">
-            Enjoy your coffee, feel at home.
-          </p>
-          <div className="mt-12 flex justify-center">
-            <img
-              src="https://images.unsplash.com/photo-1512568400610-62da28bc8a13?q=80&w=800&auto=format&fit=crop"
-              alt="Coffee"
-              className="rounded-lg shadow-xl max-w-full h-auto border-8 border-white"
-            />
-          </div>
         </div>
       </div>
     </div>
