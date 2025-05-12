@@ -22,8 +22,8 @@ const QrMenu: FC = () => {
           .select("id, name_en, name_tr");
         if (error) throw error;
 
-        const translations = { English: [], Turkish: [] };
-        const categoryMap = {};
+        const translations: CategoryTranslations = { English: [], Turkish: [] };
+        const categoryMap: Record<string, string> = {};
 
         data.forEach((category) => {
           translations.English.push(category.name_en);
