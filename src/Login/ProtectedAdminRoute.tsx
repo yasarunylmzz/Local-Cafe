@@ -5,7 +5,7 @@ import { supabase } from "../../supabaseClient";
 export default function ProtectedAdminRoute({
   children,
 }: {
-  children: JSX.Element;
+  children: React.ReactElement;
 }) {
   const [isAllowed, setIsAllowed] = useState<boolean | null>(null);
 

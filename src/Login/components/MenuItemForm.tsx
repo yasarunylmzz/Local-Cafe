@@ -1,7 +1,8 @@
 // components/MenuItemForm.tsx
 import { useState } from "react";
 import { supabase } from "../../../supabaseClient";
-import { MenuItem } from "../../../public/data"; // MenuItem tipini import ediyoruz
+import type { MenuItem } from "../../../public/data"; // MenuItem tipini import ediyoruz
+// MenuItem tipini import ediyoruz
 
 interface MenuItemFormProps {
   categories: { id: number; name_en: string; name_tr: string }[];
