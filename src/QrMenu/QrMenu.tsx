@@ -1,5 +1,5 @@
-import { useState, FC, useEffect } from "react";
-import { menuItems, categories, type MenuData } from "../../public/data";
+import { useState, type FC, useEffect } from "react";
+import { type CategoryTranslations, type MenuData } from "../../public/data";
 import { supabase } from "../../supabaseClient";
 
 type LanguageType = "English" | "Turkish";
@@ -33,13 +33,13 @@ const QrMenu: FC = () => {
 
         setCategories(translations);
         setActiveCategory(translations.English[0] || "");
-        return categoryMap; // Returning map to use in items fetching
+        return categoryMap as Record<string, string>; // Returning map to use in items fetching
       } catch (error) {
         console.error("Error fetching categories: ", error);
       }
     };
 
-    const fetchMenuItems = async (categoryMap) => {
+    const fetchMenuItems = async (categoryMap: Record<string, string>) => {
       try {
         const { data, error } = await supabase.from("menu_items").select("*");
         if (error) throw error;
@@ -81,7 +81,11 @@ const QrMenu: FC = () => {
       setLoading(true);
       try {
         const categoryMap = await fetchCategories();
-        await fetchMenuItems(categoryMap);
+        if (categoryMap) {
+          await fetchMenuItems(categoryMap);
+        } else {
+          console.error("Category map is undefined.");
+        }
       } finally {
         setLoading(false);
       }
@@ -214,17 +218,6 @@ const QrMenu: FC = () => {
                   <p className="text-sm text-gray-600 mb-3">
                     {item.description[language]}
                   </p>
-                  <div className="flex flex-wrap gap-1">
-                    {item.tags &&
-                      item.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="text-xs px-2 py-1 bg-amber-50 text-amber-800 rounded-full"
-                        >
-                          {tag[language]}
-                        </span>
-                      ))}
-                  </div>
                 </div>
               </div>
             ))

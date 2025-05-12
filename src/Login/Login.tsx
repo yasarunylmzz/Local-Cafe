@@ -25,7 +25,7 @@ function Login() {
     checkUserSession();
   }, [navigate]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     const { data, error } = await supabase.auth.signInWithPassword({

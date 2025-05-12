@@ -5,6 +5,7 @@ import CategoryForm from "./components/CategoryForm";
 import MenuItemForm from "./components/MenuItemForm";
 import Header from "./components/Header";
 import { Link } from "react-router-dom";
+import type { MenuItem } from "../../public/data";
 
 export default function Panel() {
   const [categories, setCategories] = useState<
@@ -13,10 +14,16 @@ export default function Panel() {
   const [menuData, setMenuData] = useState<{ [category: string]: MenuItem[] }>(
     {}
   );
-  const [categoryTranslations, setCategoryTranslations] = useState({
-    English: [],
-    Turkish: [],
-  });
+  interface CategoryTranslations {
+    English: string[];
+    Turkish: string[];
+  }
+
+  const [categoryTranslations, setCategoryTranslations] =
+    useState<CategoryTranslations>({
+      English: [],
+      Turkish: [],
+    });
 
   const fetchCategories = async () => {
     const { data, error } = await supabase.from("categories").select("*");
@@ -43,7 +50,7 @@ export default function Panel() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-10">
-      <Header currentTab="" setCurrentTab={() => {}} />
+      <Header />
       <div className="bg-white p-6 rounded-md shadow-md">
         <Link
           to={"/"}
