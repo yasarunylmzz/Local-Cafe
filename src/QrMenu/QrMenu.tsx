@@ -1,13 +1,94 @@
-import { useState, FC } from "react";
-import { menuItems, categories } from "../../public/data";
+import { useState, FC, useEffect } from "react";
+import { menuItems, categories, type MenuData } from "../../public/data";
+import { supabase } from "../../supabaseClient";
 
 type LanguageType = "English" | "Turkish";
 
 const QrMenu: FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>(
-    categories.English[0]
-  );
+  const [activeCategory, setActiveCategory] = useState<string>("");
   const [language, setLanguage] = useState<LanguageType>("Turkish");
+  const [categories, setCategories] = useState<CategoryTranslations>({
+    English: [],
+    Turkish: [],
+  });
+  const [menuItems, setMenuItems] = useState<MenuData>({});
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("categories")
+          .select("id, name_en, name_tr");
+        if (error) throw error;
+
+        const translations = { English: [], Turkish: [] };
+        const categoryMap = {};
+
+        data.forEach((category) => {
+          translations.English.push(category.name_en);
+          translations.Turkish.push(category.name_tr);
+          categoryMap[category.id] = category.name_en; // Map category ID to English name for access
+        });
+
+        setCategories(translations);
+        setActiveCategory(translations.English[0] || "");
+        return categoryMap; // Returning map to use in items fetching
+      } catch (error) {
+        console.error("Error fetching categories: ", error);
+      }
+    };
+
+    const fetchMenuItems = async (categoryMap) => {
+      try {
+        const { data, error } = await supabase.from("menu_items").select("*");
+        if (error) throw error;
+
+        const items: MenuData = {};
+
+        data.forEach((item) => {
+          const category = categoryMap[item.category_id]; // Using item.category_id to get category name
+
+          if (!items[category]) {
+            items[category] = [];
+          }
+
+          items[category].push({
+            id: item.id,
+            name: {
+              English: item.name_en,
+              Turkish: item.name_tr,
+            },
+            description: {
+              English: item.description_en,
+              Turkish: item.description_tr,
+            },
+            price: {
+              English: item.price_en,
+              Turkish: item.price_tr,
+            },
+            image: item.image,
+          });
+        });
+
+        setMenuItems(items);
+      } catch (error) {
+        console.error("Error fetching menu items: ", error);
+      }
+    };
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const categoryMap = await fetchCategories();
+        await fetchMenuItems(categoryMap);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const getTranslatedCategory = (category: string): string => {
     const index = categories.English.indexOf(category);
@@ -23,13 +104,41 @@ const QrMenu: FC = () => {
     setActiveCategory(englishCategory);
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-[#faf6f0]">
-      <div className="max-w-5xl mx-auto bg-white min-h-screen shadow-xl">
-        {/* Header */}
-        <div className="bg-[#5c4033] text-white p-6 rounded-b-3xl shadow-lg">
-          <h1 className="text-3xl font-bold text-center">LOCAL’S CAFÉ</h1>
-        </div>
+      <div className="max-w-2xl  bg-white min-h-screen shadow-xl relative">
+        <header className="relative">
+          <div className="relative h-72 md:h-80 overflow-hidden rounded-b-3xl shadow-xl">
+            <img
+              src="../../public/logo.jpg"
+              alt="Cafe Ambiance"
+              className="w-full h-full object-cover brightness-75"
+            />
+
+            {/* Kahverengi degrade örtü */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#3a250f80] to-[#5c4033]/80"></div>
+
+            {/* Başlık ve Alt Başlık */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+              <h1 className="text-4xl md:text-5xl font-serif font-bold text-white drop-shadow-lg tracking-wider">
+                Local's Cafe
+              </h1>
+              <p className="text-sm md:text-base text-white mt-2 italic font-light">
+                Kahve & Lezzet
+              </p>
+            </div>
+          </div>
+        </header>
+
+        {/* Header ile içerik arasına ufak boşluk */}
+        <div className="h-8"></div>
+
+        {/* Header Altı Boşluk */}
+        <div className="h-14"></div>
 
         {/* Dil Değiştirme */}
         <div className="flex justify-center mt-6">
@@ -142,15 +251,6 @@ const QrMenu: FC = () => {
               </p>
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="bg-gray-50 p-4 border-t mt-6 text-center text-sm text-gray-500">
-          <p>
-            {language === "English"
-              ? "Scan QR code to view our menu on your device"
-              : "Menümüzü cihazınızda görüntülemek için QR kodu tarayın"}
-          </p>
         </div>
       </div>
     </div>

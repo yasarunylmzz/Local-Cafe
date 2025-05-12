@@ -1,13 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient"; // Adjust the import path as necessary
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const checkUserSession = async () => {
+      const { data } = await supabase.auth.getSession();
+
+      if (data.session) {
+        // If there's a session, redirect based on the user authentication logic
+        const userEmail = data.session.user.email;
+        if (userEmail === "localscafe@admin.com") {
+          navigate("/admin/panel");
+        } else {
+          navigate("/");
+        }
+      }
+    };
+
+    checkUserSession();
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Login logic here
-    console.log("Giriş denemesi:", email, password);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert("Giriş başarısız: " + error.message);
+      return;
+    }
+
+    if (data?.user?.email === "localscafe@admin.com") {
+      console.log("Admin giriş yapıldı");
+      navigate("/admin/panel");
+    } else {
+      console.log("Kullanıcı giriş yapıldı");
+      navigate("/");
+    }
   };
 
   return (
