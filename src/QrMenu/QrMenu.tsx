@@ -118,7 +118,7 @@ const QrMenu: FC = () => {
         <header className="relative">
           <div className="relative h-72 md:h-80 overflow-hidden rounded-b-3xl shadow-xl">
             <img
-              src="../../public/logo.jpg"
+              src="/logo.jpg"
               alt="Cafe Ambiance"
               className="w-full h-full object-cover brightness-75"
             />
